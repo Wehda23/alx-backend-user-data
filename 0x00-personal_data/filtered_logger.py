@@ -2,9 +2,18 @@
 """
 Module contains filter_datum
 """
+import re
+from typing import (
+    List,
+)
 
 
-def filter_datum(fields, replacer: str, message: str, separator: str) -> str:
+def filter_datum(
+    fields: List[str],
+    replacer: str,
+    message: str,
+    separator: str,
+) -> str:
     """
     This function filters the given message by replacing the specified fields with the replacer string.
 
@@ -17,12 +26,10 @@ def filter_datum(fields, replacer: str, message: str, separator: str) -> str:
     Returns:
         str: The filtered message.
     """
-    filtered_message: str = ""
-    if message.endswith(";"):
-        message = message[:-1]
-    for field in message.split(separator):
-        key, value = field.split("=")
-        if key in fields:
-            value: str = replacer
-        filtered_message += f"{key}={value};"
-    return filtered_message
+    for f in fields:
+        message = re.sub(
+            f"{f}=.*?{separator}",
+            f"{f}={replacer}{separator}",
+            message,
+        )
+    return message
